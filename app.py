@@ -7,11 +7,11 @@ import json
 
 st.set_page_config(page_title="AI-SCLD", layout="wide", page_icon="🛡️")
 
-st.title("🛡️ AI-SCLD: Gelişmiş Komut Satırı Güvenlik Analizi")
+st.title(" AI-SCLD: Gelişmiş Komut Satırı Güvenlik Analizi")
 
 st.markdown("""
 <div style='background-color: #f0f2f6; padding: 20px; border-radius: 10px; margin-bottom: 20px'>
-<h4>🎯 Bu Araç Hakkında</h4>
+<h4> Bu Araç Hakkında</h4>
 Bu gelişmiş güvenlik aracı, girilen komutların zararlı mı yoksa güvenli mi olduğunu 
 yapay zeka ile yüksek doğrulukta tahmin eder. <b>10,000 komut</b> üzerinde eğitilmiş 
 <b>5 farklı makine öğrenmesi modeli</b> karşılaştırılarak en iyi performans elde edilmiştir.

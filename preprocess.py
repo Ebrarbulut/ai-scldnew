@@ -4,7 +4,7 @@ import joblib
 import re
 
 def clean_command(command):
-    """Komut satırını temizle"""
+    
   
     command = re.sub(r'[^\w\s\-\./:]', ' ', command)
     
@@ -12,7 +12,7 @@ def clean_command(command):
     return command
 
 def preprocess(csv_path, max_features=2000):
-    """Gelişmiş ön işleme"""
+    
     df = pd.read_csv(csv_path)
     
    
